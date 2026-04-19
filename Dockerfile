@@ -7,13 +7,14 @@ RUN apk add --no-cache \
     ca-certificates \
     wget
 
-# Download PocketBase
 ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /pb/ && rm /tmp/pb.zip
 
-# Create data directory for persistence
 RUN mkdir -p /pb/pb_data
+
+COPY entrypoint.sh /pb/entrypoint.sh
+RUN chmod +x /pb/entrypoint.sh
 
 EXPOSE 8080
 
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8080"]
+ENTRYPOINT ["/pb/entrypoint.sh"]
